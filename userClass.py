@@ -9,18 +9,10 @@ class User:
         self.first_name = "Null"
         self.last_name = "Null"
         self.appetizer = "Null"
-
-    def setusername(self, in_username):
-        self.username = in_username
-
-    def setpassword(self, in_password):
-        self.password = in_password
-
-    def setfirst_name(self, in_first_name):
-        self.first_name = in_first_name
-
-    def printfirst_name(self):
-        print(self.first_name)
+        self.taste_score = 0
+        self.effort_score = 0
+        self.presentation_score = 0
+        self.number_of_tens = 0
 
 
     def print_user_info(self):

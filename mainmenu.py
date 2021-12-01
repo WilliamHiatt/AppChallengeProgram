@@ -1,5 +1,5 @@
 from userClass import User
-from mainProgram import test
+from mainProgram import *
 
 ### GETS CONNECTED TO THE DATABASE ###
 import mysql.connector
@@ -70,7 +70,7 @@ def new_user():
 
 def login():
     """This verifies the user and logs them in"""
-    login = False
+    status = False
     username = input("Please enter your username: ")
     password = input("Please enter your password: ")
 
@@ -80,10 +80,10 @@ def login():
         userinst = usersDic.get(username)
         real_password = userinst.password
         #Loop to continue to ask for user password if it is incorrect
-        while(login != True):
+        while(status != True):
             #Hits here if password is correct
             if real_password == password:
-                login = True
+                status = True
             #hits here if password is not correct and requests the user try again
             else:
                 print("Incorrect Password")
@@ -98,7 +98,7 @@ def login():
         else:
             login()
 
-    test()
+    getscores(usersDic)
 
 def check_user(username):
     """Checks to make sure the user doesn't already have an account"""
@@ -119,15 +119,15 @@ def getDatabaseInfo():
         newUser = User(x[0])
         mycursor.execute("SELECT username FROM users WHERE userId = " + str(x[0]) + "")
         for y in mycursor:
-            newUser.setusername(y[0])
+            newUser.username = y[0]
 
         mycursor.execute("SELECT password FROM users WHERE userId = " + str(x[0]) + "")
         for y in mycursor:
-            newUser.setpassword(y[0])
+            newUser.password = y[0]
 
         mycursor.execute("SELECT first_name FROM users WHERE userId = " + str(x[0]) + "")
         for y in mycursor:
-            newUser.setfirst_name(y[0])
+            newUser.first_name = y[0]
 
         mycursor.execute("SELECT last_name FROM users WHERE userId = " + str(x[0]) + "")
         for y in mycursor:
@@ -136,6 +136,22 @@ def getDatabaseInfo():
         mycursor.execute("SELECT appetizer FROM users WHERE userId = " + str(x[0]) + "")
         for y in mycursor:
             newUser.appetizer = y[0]
+
+        mycursor.execute("SELECT taste_score FROM users WHERE userId = " + str(x[0]) + "")
+        for y in mycursor:
+            newUser.taste_score = y[0]
+
+        mycursor.execute("SELECT effort_score FROM users WHERE userId = " + str(x[0]) + "")
+        for y in mycursor:
+            newUser.effort_score = y[0]
+
+        mycursor.execute("SELECT presentation_score FROM users WHERE userId = " + str(x[0]) + "")
+        for y in mycursor:
+            newUser.presentation_score = y[0]
+
+        mycursor.execute("SELECT number_of_tens FROM users WHERE userId = " + str(x[0]) + "")
+        for y in mycursor:
+            newUser.number_of_tens = y[0]
 
         #Stores instance into dictionary with username as key
         usersDic[newUser.username] = newUser
