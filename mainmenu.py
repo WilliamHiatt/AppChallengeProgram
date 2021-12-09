@@ -35,6 +35,27 @@ def menu():
             print("Please select one of the above options.")
 
 
+def user_menu(userinst):
+    """This is the function that starts the users menu that allows them to vote, change and print user info"""
+    while True:
+        print("Please select one of the following: ")
+        selection = input(" 1. Print your info.\n"
+                          " 2. Change your info.\n"
+                          " 3. Score Appetizers\n"
+                          " 4. Exit\n")
+
+        if selection == '1':
+            userinst.print_user_info()
+        elif selection == '2':
+            ####### NEED TO FINISH THIS PART ########
+            print("Not finished yet")
+        elif selection == '3':
+            getscores(usersDic, userinst.username)
+        elif selection == '4':
+            break
+        else:
+            print("Please select one of the above options.")
+
 def new_user():
     """This gets the users information to create an account and loads it into the databse"""
     username = input("Please enter your username: ")
@@ -90,15 +111,16 @@ def login():
                 password = input("Please re-enter password: ")
     else:
         print("There is no account under that username.\n" )
-        selection = input("Would you like to "
+        selection = input("Would you like to\n "
                             "1. Create a new account\n "
-                            "2. Try another username")
+                            "2. Try another username\n")
         if selection == "1":
             new_user()
+            login()
         else:
             login()
 
-    getscores(usersDic)
+    user_menu(userinst)
 
 def check_user(username):
     """Checks to make sure the user doesn't already have an account"""

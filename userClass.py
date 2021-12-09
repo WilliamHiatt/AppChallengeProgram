@@ -12,16 +12,18 @@ class User:
         self.taste_score = 0
         self.effort_score = 0
         self.presentation_score = 0
+        self.total_score = 0
         self.number_of_tens = 0
 
 
     def print_user_info(self):
-        print("User ID " + str(self.userID))
+        print("\n\nUser ID " + str(self.userID))
         print("Username " + str(self.username))
         print("password " + str(self.password))
         print("first_name " + str(self.first_name))
         print("last_name " + str(self.last_name))
         print("Appetizer " + str(self.appetizer))
+        print("\n\n")
 
 
         
