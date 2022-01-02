@@ -30,6 +30,9 @@ def getscores(usersDic, currentUserName):
             userinst.presentation_score = userinst.presentation_score + score
             print("Finished scoring " + str(userinst.appetizer) + ".\n\n\n\n\n\n")
 
+            userinst.total_score = userinst.total_score + userinst.taste_score + \
+                                   userinst.presentation_score + userinst.effort_score
+
             # Updates the users scores in the databse with the newley entered scores
             mycursor.execute("UPDATE users SET "
                              "taste_score = %s, "
@@ -46,7 +49,8 @@ def getscores(usersDic, currentUserName):
                               userinst.username))
 
             db.commit()
-
+    currentuser = usersDic.get(currentUserName)
+    currentuser.voted = False
 
 def checkscore(score, instance):
     # Makes sure that the entered score falls within the required
@@ -63,73 +67,163 @@ def checkscore(score, instance):
 
 
 def sort_high_to_low(usersDic):
-    # STILL NEEDS LOTS OF WORK #
     # Finds the highest scores
-    # Uses lists with strings having the users first name + the score they received.
+    # Lists consist of user class instances
     tasteList = []
     effortList = []
     presentationList = []
     totalScoreList = []
 
-    # Loops through the userDic to compare each user to each user to every user in each class.
+    # Counter user to keep track of where we are in the list
+    counter = 0
+    # Insert sort into tasteList
     for x in usersDic:
         userinst = usersDic.get(x)
-        # Orders taste list
-        for y in tasteList:
-            currentUser = usersDic.get(y)
-            if(userinst.taste_score > currentUser.taste_score):
-                tasteList.insert(y, userinst.first_name + " with a score of " + str(userinst.taste_score))
-            elif(y == len(tasteList)):
-                tasteList.append(userinst.first_name + " with a score of " + str(userinst.taste_score))
+        # Hits if we have an empty list
+        if len(tasteList) == 0:
+            tasteList.append(userinst)
 
-        # orders effort list
-        for y in effortList:
-            currentUser = usersDic.get(y)
-            if (userinst.effort_score > currentUser.effort_score):
-                tasteList.insert(y, userinst.first_name + " with a score of " + str(userinst.effort_score))
-            elif (y == len(effortList)):
-                tasteList.append(userinst.first_name + " with a score of " + str(userinst.effort_score))
+        else:
+            for y in tasteList:
+                # Hits if the current instance is greater than the current position in the list
+                if userinst.taste_score >= y.taste_score:
+                    tasteList.insert(counter, userinst)
+                    break
+                # Hits if we are in the last position in the list
+                elif len(tasteList) == counter + 1:
+                    tasteList.append(userinst)
+                    break
+                # Increments counter to next list position
+                counter += 1
+    # Sets the counter back to 0
+    counter = 0
+    # Insert sort of effort list
+    for x in usersDic:
+        userinst = usersDic.get(x)
+        # Hits if empty list
+        if len(effortList) == 0:
+            effortList.append(userinst)
 
-        # orders presentation list
-        for y in presentationList:
-            currentUser = usersDic.get(y)
-            if (userinst.presentation_score > currentUser.presentation_score):
-                tasteList.insert(y, userinst.first_name + " with a score of " + str(userinst.presentation_score))
-            elif (y == len(presentationList)):
-                tasteList.append(userinst.first_name + " with a score of " + str(userinst.presentation_score))
+        else:
+            for y in effortList:
+                # Hits if the current instance is greater than the current position in the list
+                if userinst.effort_score >= y.effort_score:
+                    effortList.insert(counter, userinst)
+                    break
+                # Hits if last element in list
+                elif len(effortList) == counter + 1:
+                    effortList.append(userinst)
+                    break
+                # Increments list
+                counter += 1
+    # sets counter back to 0
+    counter = 0
+    # Insert sort for presentation list
+    for x in usersDic:
+        userinst = usersDic.get(x)
+        # Hits if the list is empty
+        if len(presentationList) == 0:
+            presentationList.append(userinst)
 
-        ###STILL NEED TO DO TOTAL CATAGORY###
+        else:
+            for y in presentationList:
+                # Hits if the current instance is greater than the current position in the list
+                if userinst.presentation_score >= y.presentation_score:
+                    presentationList.insert(counter, userinst)
+                    break
+                # Hits if we are on the last element of the list
+                elif len(presentationList) == counter + 1:
+                    presentationList.append(userinst)
+                    break
 
-    # Prints out the winners in each category.
-    print("The winners in the taste category are: \n")
-    for x in range(2):
-        if (x == 0):
-            print("1st place " + tasteList[0])
+                counter += 1
 
-        elif (x == 1):
-            print("2nd place " + tasteList[1])
+    counter = 0
+    # Insert sort for total score list
+    for x in usersDic:
+        userinst = usersDic.get(x)
+        # Hits if the list is empty
+        if len(totalScoreList) == 0:
+            totalScoreList.append(userinst)
 
-        elif (x == 2):
-            print("3rd place " + tasteList[2])
+        else:
+            for y in totalScoreList:
+                # Hits if the current instance is greater than the current position in the list
+                if userinst.total_score >= y.total_score:
+                    totalScoreList.insert(counter, userinst)
+                    break
+                # Hits if we are at the last element in the list
+                elif len(totalScoreList) == counter + 1:
+                    totalScoreList.append(userinst)
+                    break
 
-    print("The winners in the effort category are: \n")
-    for x in range(2):
-        if (x == 0):
-            print("1st place " + effortList[0])
+                counter += 1
 
-        elif (x == 1):
-            print("2nd place " + effortList[1])
+    # Prints out the top 3 and the score each received taste
+    counter = 2
+    while counter >= 0:
+        currentuser = tasteList[counter]
+        if counter == 2:
+            print("In 3rd place for taste with a score of " + str(currentuser.taste_score) + ", "
+                  + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 1:
+            print("In 2nd place for taste with a score of " + str(currentuser.taste_score) + ", "
+                  + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 0:
+            print("In 1st place for taste with a score of " + str(currentuser.taste_score) + ", "
+                  + currentuser.first_name + "!\n")
+            counter -= 1
 
-        elif (x == 2):
-            print("3rd place " + effortList[2])
+        # Prints out the top 3 and the score each received in effort
+    counter = 2
+    while counter >= 0:
+        currentuser = effortList[counter]
+        if counter == 2:
+            print("In 3rd place for effort with a score of " + str(currentuser.effort_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 1:
+            print("In 2nd place for effort with a score of " + str(currentuser.effort_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 0:
+            print("In 1st place for effort with a score of " + str(currentuser.effort_score) + ", "
+                    + currentuser.first_name + "!\n")
+            counter -= 1
 
-    print("The winners in the presentation category are: \n")
-    for x in range(2):
-        if (x == 0):
-            print("1st place " + presentationList[0])
+    # Prints out the top 3 and the score each received in presentation
+    counter = 2
+    while counter >= 0:
+        currentuser = presentationList[counter]
+        if counter == 2:
+            print("In 3rd place for presentation with a score of " + str(currentuser.presentation_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 1:
+            print("In 2nd place for presentation with a score of " + str(currentuser.presentation_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 0:
+            print("In 1st place for presentation with a score of " + str(currentuser.presentation_score) + ", "
+                    + currentuser.first_name + "!\n")
+            counter -= 1
 
-        elif (x == 1):
-            print("2nd place " + presentationList[1])
+    # Prints out the top 3 and the score each received in total category
+    counter = 2
+    while counter >= 0:
+        currentuser = totalScoreList[counter]
+        if counter == 2:
+            print("In 3rd place for overall with a score of " + str(currentuser.total_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 1:
+            print("In 2nd place for overall with a score of " + str(currentuser.total_score) + ", "
+                    + currentuser.first_name + "!")
+            counter -= 1
+        elif counter == 0:
+            print("In 1st place for overall with a score of " + str(currentuser.total_score) + ", "
+                    + currentuser.first_name + "!\n")
+            counter -= 1
 
-        elif (x == 2):
-            print("3rd place " + presentationList[2])

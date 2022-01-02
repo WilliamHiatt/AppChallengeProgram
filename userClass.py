@@ -14,6 +14,8 @@ class User:
         self.presentation_score = 0
         self.total_score = self.taste_score + self.effort_score + self.presentation_score
         self.number_of_tens = 0
+        self.voted = False
+        self.admin = False
 
     def print_user_info(self):
         # Prints all user information besides scores. These are kept confidential
@@ -49,7 +51,7 @@ class User:
 
         while True:
             if str(current_pswd) == self.password:
-                # Requires two passwords to ensure that there aren't any tpo's when entering
+                # Requires two passwords to ensure that there aren't any typo's when entering
                 new_pswd = input("\nPlease enter your new password: ")
                 new_pswd2 = input("Please re-enter your new password: ")
 

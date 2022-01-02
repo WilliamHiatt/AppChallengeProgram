@@ -21,7 +21,7 @@ def menu():
     """This is the main menu of the program"""
     case = True
     while case == True:
-        selection = input("1\tLogin\n2\tCreate Account\n3\tExit\nAdmin 4 for sort 5 for set 0")
+        selection = input("1\tLogin\n2\tCreate Account\n3\tExit\nAdmin 4 for sort 5 for set 0\n")
         if selection == '1':
             login()
         elif selection == '2':
@@ -45,14 +45,17 @@ def user_menu(userinst):
         selection = input(" 1. Print your info.\n"
                           " 2. Change your info.\n"
                           " 3. Score Appetizers\n"
-                          " 4. Exit\n")
+                          " 4. Logout\n")
 
         if selection == '1':
             userinst.print_user_info()
         elif selection == '2':
             change_user_info_menu(userinst)
         elif selection == '3':
-            getscores(usersDic, userinst.username)
+            if userinst.voted != True:
+                getscores(usersDic, userinst.username)
+            else:
+                print("\nYou already voted.\n")
         elif selection == '4':
             break
         else:
